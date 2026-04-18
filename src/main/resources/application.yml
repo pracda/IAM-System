@@ -22,7 +22,7 @@ security:
 
 bootstrap:
   admin:
-    enabled: ${BOOTSTRAP_ADMIN_ENABLED:true}
+    enabled: ${BOOTSTRAP_ADMIN_ENABLED:false}
     email: ${BOOTSTRAP_ADMIN_EMAIL:admin@sovereign.gov}
     password: ${BOOTSTRAP_ADMIN_PASSWORD:ChangeMeNow123!}
     agency: ${BOOTSTRAP_ADMIN_AGENCY:FINANCE}

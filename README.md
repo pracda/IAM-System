@@ -16,10 +16,11 @@ Spring Boot prototype for centralized IAM with JWT authentication, RBAC + ABAC a
 - `resource`: protected agency APIs (`/finance/records`, `/health/records`, `/land/records`)
 - `audit`: logs for login/access outcomes
 
-## Second-pass improvements
-- Automatic bootstrap admin creation is now supported through config/env vars.
-- Login failure logging is now single-event per failed attempt (no duplicate failure entries).
-- Runtime configuration supports environment overrides for DB/JWT/bootstrap settings.
+## Conflict-resolution note
+This branch keeps the second-pass behavior:
+- optional bootstrap admin creation at startup,
+- single-event login failure auditing,
+- safe principal extraction in resource authorization flow.
 
 ## Run and test guide
-See [`HOW_TO_RUN.md`](./HOW_TO_RUN.md) for detailed local setup, API flow, and verification steps.
+See [`HOW_TO_RUN.md`](./HOW_TO_RUN.md) for full setup and verification instructions.

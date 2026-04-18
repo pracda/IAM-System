@@ -37,20 +37,21 @@ public class BootstrapDataConfig {
                 return;
             }
 
-            if (bootstrapAdminProperties.email() == null || bootstrapAdminProperties.email().isBlank()
-                    || bootstrapAdminProperties.password() == null || bootstrapAdminProperties.password().isBlank()) {
+            String email = bootstrapAdminProperties.email() == null ? "" : bootstrapAdminProperties.email().trim().toLowerCase();
+            String password = bootstrapAdminProperties.password() == null ? "" : bootstrapAdminProperties.password().trim();
+            if (email.isBlank() || password.isBlank()) {
                 throw new IllegalStateException("bootstrap.admin is enabled but email/password are missing");
             }
 
-            userAccountRepository.findByEmail(bootstrapAdminProperties.email()).orElseGet(() -> {
+            userAccountRepository.findByEmail(email).orElseGet(() -> {
                 var adminRole = roleRepository.findByName(RoleName.ADMIN)
                         .orElseThrow(() -> new IllegalStateException("ADMIN role not found"));
                 var adminAgency = agencyRepository.findByName(bootstrapAdminProperties.agency())
                         .orElseThrow(() -> new IllegalStateException("Bootstrap admin agency not found"));
 
                 return userAccountRepository.save(UserAccount.builder()
-                        .email(bootstrapAdminProperties.email())
-                        .passwordHash(passwordEncoder.encode(bootstrapAdminProperties.password()))
+                        .email(email)
+                        .passwordHash(passwordEncoder.encode(password))
                         .role(adminRole)
                         .agency(adminAgency)
                         .clearanceLevel(bootstrapAdminProperties.clearance())

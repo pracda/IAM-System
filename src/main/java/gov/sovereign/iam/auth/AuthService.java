@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
+    private static final String INVALID_CREDENTIALS = "Invalid credentials";
+
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -29,14 +31,14 @@ public class AuthService {
         UserAccount user;
         try {
             user = userService.getByEmail(request.email());
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             auditService.log(request.email(), AuditAction.LOGIN_FAILURE, "auth/login", "Unknown account");
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new IllegalArgumentException(INVALID_CREDENTIALS);
         }
 
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             auditService.log(request.email(), AuditAction.LOGIN_FAILURE, "auth/login", "Invalid password");
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new IllegalArgumentException(INVALID_CREDENTIALS);
         }
 
         String token = jwtService.generateToken(user);
