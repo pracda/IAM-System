@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/iamdb
+    username: iam
+    password: iam
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  data:
+    mongodb:
+      uri: mongodb://iam:iam@localhost:27017/iam_audit?authSource=admin
+
+server:
+  port: 8080
+
+security:
+  jwt:
+    # base64 for "mini-sovereign-iam-system-super-secret-key-2026!"
+    secret: bWluaS1zb3ZlcmVpZ24taWFtLXN5c3RlbS1zdXBlci1zZWNyZXQta2V5LTIwMjYh
+    expiration-seconds: 3600
