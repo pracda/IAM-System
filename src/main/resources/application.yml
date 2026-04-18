@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/iamdb}
+    username: ${POSTGRES_USER:iam}
+    password: ${POSTGRES_PASSWORD:iam}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  data:
+    mongodb:
+      uri: ${MONGO_URI:mongodb://iam:iam@localhost:27017/iam_audit?authSource=admin}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+security:
+  jwt:
+    # base64 for "mini-sovereign-iam-system-super-secret-key-2026!"
+    secret: ${JWT_SECRET_B64:bWluaS1zb3ZlcmVpZ24taWFtLXN5c3RlbS1zdXBlci1zZWNyZXQta2V5LTIwMjYh}
+    expiration-seconds: ${JWT_EXPIRATION_SECONDS:3600}
+
+bootstrap:
+  admin:
+    enabled: ${BOOTSTRAP_ADMIN_ENABLED:true}
+    email: ${BOOTSTRAP_ADMIN_EMAIL:admin@sovereign.gov}
+    password: ${BOOTSTRAP_ADMIN_PASSWORD:ChangeMeNow123!}
+    agency: ${BOOTSTRAP_ADMIN_AGENCY:FINANCE}
+    clearance: ${BOOTSTRAP_ADMIN_CLEARANCE:HIGH}
