@@ -48,7 +48,7 @@ public class ResourceController {
                                                   String action,
                                                   ClassificationLevel classification,
                                                   String resource) {
-        SecurityUserPrincipal principal = extractPrincipal(authentication);
+        SecurityUserPrincipal principal = authentication != null ? (SecurityUserPrincipal) authentication.getPrincipal() : null;
         String email = principal != null ? principal.email() : "anonymous";
 
         PolicyDecision decision = policyService.evaluate(principal, agency, action, classification);
@@ -64,12 +64,5 @@ public class ResourceController {
                 "agency", agency.name(),
                 "resource", resource,
                 "classification", classification.name()));
-    }
-
-    private SecurityUserPrincipal extractPrincipal(Authentication authentication) {
-        if (authentication == null || !(authentication.getPrincipal() instanceof SecurityUserPrincipal principal)) {
-            return null;
-        }
-        return principal;
     }
 }

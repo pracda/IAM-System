@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-    private static final String INVALID_CREDENTIALS = "Invalid credentials";
-
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -28,21 +26,19 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
-        UserAccount user;
         try {
-            user = userService.getByEmail(request.email());
-        } catch (IllegalArgumentException e) {
-            auditService.log(request.email(), AuditAction.LOGIN_FAILURE, "auth/login", "Unknown account");
-            throw new IllegalArgumentException(INVALID_CREDENTIALS);
-        }
+            UserAccount user = userService.getByEmail(request.email());
+            if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+                auditService.log(request.email(), AuditAction.LOGIN_FAILURE, "auth/login", "Invalid credentials");
+                throw new IllegalArgumentException("Invalid credentials");
+            }
 
-        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
-            auditService.log(request.email(), AuditAction.LOGIN_FAILURE, "auth/login", "Invalid password");
-            throw new IllegalArgumentException(INVALID_CREDENTIALS);
+            String token = jwtService.generateToken(user);
+            auditService.log(user.getEmail(), AuditAction.LOGIN_SUCCESS, "auth/login", "JWT issued");
+            return new AuthResponse(token);
+        } catch (Exception e) {
+            auditService.log(request.email(), AuditAction.LOGIN_FAILURE, "auth/login", "Login failed");
+            throw e;
         }
-
-        String token = jwtService.generateToken(user);
-        auditService.log(user.getEmail(), AuditAction.LOGIN_SUCCESS, "auth/login", "JWT issued");
-        return new AuthResponse(token);
     }
 }

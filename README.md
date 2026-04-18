@@ -24,7 +24,7 @@ docker compose up -d
 (If Maven wrapper is not present in your environment, use `mvn spring-boot:run`.)
 
 ## Quick flow
-1. Ensure bootstrap admin is enabled (see `application.yml`) or pre-seed an admin.
+1. Register an admin user (`POST /users`) after temporarily enabling access for bootstrap or by preloading a user.
 2. Login: `POST /auth/login`
 3. Call protected APIs with `Authorization: Bearer <jwt>`
 4. View logs: `GET /audit/logs` (ADMIN or AUDITOR)
@@ -35,6 +35,3 @@ docker compose up -d
 - AUDITOR is read-only
 - Non-admin users cannot access cross-agency resources
 - Clearance level must be >= resource classification
-
-## Run and test guide
-See [`HOW_TO_RUN.md`](./HOW_TO_RUN.md) for full setup and verification instructions.
